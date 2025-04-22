@@ -1,0 +1,286 @@
+@font-face {
+  font-family: "Orbitron";
+  src: url("/fonts/Orbitron.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: "Orbitron";
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+  overflow: hidden;
+}
+#hero_car{
+  height: 100dvh;
+  width: 100vw;
+  position: fixed;
+  inset: 0;
+  background: #d60000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#loadingword{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  font-size: 4rem;
+  color: #f0f0f0;
+}
+.car_cont {
+height: 100%;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+}
+#ui {
+  color: #181818;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.356);
+  padding: 8px;
+  border-radius: 9px;
+  z-index: 100;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  transform: translate3d(-5rem, 0, 0);
+  transition: transform 300ms ease;
+  label {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 7px;
+    cursor: pointer;
+
+    border: none;
+    transition: scale 300ms ease-in-out;
+    &:hover {
+      scale: 1.1;
+    }
+    input {
+      appearance: none;
+    }
+  }
+}
+.hero_menu_button {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 1000;
+  height: 3em;
+  width: 3em;
+
+  svg {
+    height: 100%;
+    width: 100%;
+
+    path {
+      stroke: #000000;
+      transition: stroke 300ms ease-in-out, transform 300ms ease-in-out;
+    }
+  }
+
+  &:hover path {
+    stroke: #797979;
+  }
+}
+#hero_menu_button {
+  transition: transform 300ms ease;
+  transform: translate3d(5rem, 0, 0);
+}
+
+/* When checked, change stroke */
+#hero_toggle:checked + .hero_menu_button svg path {
+  stroke: #fff;
+}
+#css3-hero {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  opacity: 0;
+  transform: rotateY(0deg) scale(0.95);
+  transition: transform 0.8s ease, opacity 0.4s ease;
+  background: #1a1a1a;
+  color: white;
+  text-align: center;
+  border-radius: 3vh;
+  padding: 2vh;
+  width: 90vw;
+  max-width: 60vw;
+  box-shadow: 0 5vh 15vh rgba(0, 0, 0, 0.5);
+  font-size: 2vh;
+  position: absolute;
+  z-index: 100;
+}
+#css3-hero h1 {
+  font-size: 4vh;
+  margin-bottom: 2vh;
+}
+
+.section-content {
+  font-size: 2.5vh;
+  line-height: 1.4;
+  letter-spacing: 1.2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  a {
+    text-decoration: none;
+    color: white;
+  }
+}
+
+.section-content ul {
+  list-style: none;
+  padding: 0;
+  width: 80%;
+}
+
+.section-content li,
+a {
+  letter-spacing: 0;
+  cursor: pointer;
+  margin: 1vh 0;
+  background: #2c2c2c;
+  line-height: 2rem;
+  padding: 1vh;
+  border-radius: 1vh;
+  transition: letter-spacing 300ms ease, color 300ms ease;
+  &:hover {
+    letter-spacing: 1.5px;
+    color: rgb(255, 175, 255);
+  }
+  &:active {
+    color: #f783f7;
+  }
+}
+
+input[type="checkbox"] {
+  margin-left: 1vw;
+  transform: scale(1.2);
+  transition: transform 300ms ease;
+  &:hover {
+    transform: scale(1.4);
+  }
+}
+
+#bg-loader {
+  position: fixed;
+  inset: 0;
+  background-color: #000000;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease, transform 0.3s ease;
+}
+
+#loader {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  overflow: hidden;
+  width: 3em;
+  height: 1.1em;
+  font: bold 2.8em monospace;
+  color: white;
+}
+
+.digit {
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+}
+
+.nums {
+  line-height: 1em;
+  transition: transform 0.4s ease-out;
+}
+
+.rotate-warning {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  font-size: 1.2rem;
+  overflow: hidden;
+  z-index: 9995;
+}
+
+.phone-icon {
+  width: 100px;
+  height: 180px;
+  border: 6px solid #fff;
+  border-radius: 20px;
+  position: relative;
+  margin-bottom: 20px;
+  transform: rotate(90deg);
+}
+
+.phone-icon .screen {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  right: 10px;
+  bottom: 15px;
+  border-radius: 10px;
+}
+
+#start-screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.5rem;
+  z-index: 9990;
+  overflow: hidden;
+  transition: opacity 0.5s ease;
+}
+
+#start-screen p {
+  padding: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 1.8s infinite;
+}
+
+#main-content {
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    letter-spacing: 1px;
+  }
+  50% {
+    transform: scale(1.05);
+    letter-spacing: 1.7px;
+  }
+  100% {
+    transform: scale(1);
+    letter-spacing: 1px;
+  }
+}

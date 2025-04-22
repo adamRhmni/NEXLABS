@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEXLAPS recordingTOOL</title>
+  </head>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .recordingTool {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #f3000080;
+      font-size: 1rem;
+      z-index: 1500;
+      button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: #fff;
+        &:hover {
+          color: #f30000;
+        }
+      }
+    }
+  </style>
+  <body>
+    <section><h1>yo use start then select screen then stop</h1></section>
+    <div class="recordingTool">
+      <button id="startRecording">Start Recording</button>
+      <button id="stopRecording">Stop Recording</button>
+    </div>
+    <script>
+      let recorder,
+        stream,
+        chunks = [];
+
+      function startRecording() {
+        navigator.mediaDevices
+          .getDisplayMedia({ video: { frameRate: 60 } })
+          .then((s) => {
+            stream = s;
+            recorder = new MediaRecorder(stream, {
+              mimeType: "video/webm; codecs=vp9",
+            });
+            chunks = [];
+
+            recorder.ondataavailable = (e) => chunks.push(e.data);
+            recorder.onstop = () => {
+              const blob = new Blob(chunks, { type: "video/webm" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "threejs_recording.webm";
+              a.click();
+            };
+
+            recorder.start();
+            console.log("Recording started");
+          })
+          .catch((e) => console.error("Recording error:", e));
+      }
+
+      function stopRecording() {
+        recorder.stop();
+        stream.getTracks().forEach((t) => t.stop());
+        console.log("Recording stopped");
+      }
+      document
+        .getElementById("startRecording")
+        .addEventListener("click", startRecording);
+      document
+        .getElementById("stopRecording")
+        .addEventListener("click", stopRecording);
+    </script>
+  </body>
+</html>

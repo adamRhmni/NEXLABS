@@ -92,6 +92,7 @@ camera.position.x = 3;
 controls.enableDamping = true;
 controls.dampingFactor = 0.1;
 controls.enabled = false;
+controls.enablePan = false;
 
 // loading
 const loadermanager = new LoadingManager();
@@ -159,7 +160,6 @@ function checkOrientation() {
 
 // Start the application when clicked
 
-
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -170,25 +170,27 @@ const explosionsound = new THREE.PositionalAudio(listener);
 const entersound = new THREE.PositionalAudio(listener);
 const activemenusound = new THREE.PositionalAudio(listener);
 const hoveremenusound = new THREE.PositionalAudio(listener);
-const bgsound =new THREE.PositionalAudio(listener);
+const bgsound = new THREE.PositionalAudio(listener);
 
-audioLoader.load("sound/dark-ambient-background-music-polluted-horizons-244007.mp3", (buffer) => {
-  bgsound.setBuffer(buffer);
-  bgsound.setLoop(false);
-  bgsound.setVolume(0.2);
-  bgsound.setRefDistance(20); // for 3D spatial effect
-});
+audioLoader.load(
+  "sound/dark-ambient-background-music-polluted-horizons-244007.mp3",
+  (buffer) => {
+    bgsound.setBuffer(buffer);
+    bgsound.setLoop(false);
+    bgsound.setVolume(0.2);
+    bgsound.setRefDistance(20); // for 3D spatial effect
+  }
+);
 
-
-audioLoader.load("sound/zapsplat_multimedia_button_click_001_78078.mp3", (buffer) => {
-  hoveremenusound.setBuffer(buffer);
-  hoveremenusound.setLoop(false);
-  hoveremenusound.setVolume(0.8);
-  hoveremenusound.setRefDistance(20); // for 3D spatial effect
-});
-
-
-
+audioLoader.load(
+  "sound/zapsplat_multimedia_button_click_001_78078.mp3",
+  (buffer) => {
+    hoveremenusound.setBuffer(buffer);
+    hoveremenusound.setLoop(false);
+    hoveremenusound.setVolume(0.8);
+    hoveremenusound.setRefDistance(20); // for 3D spatial effect
+  }
+);
 
 audioLoader.load("sound/ui-sound-hover-270300.mp3", (buffer) => {
   activemenusound.setBuffer(buffer);
@@ -197,9 +199,9 @@ audioLoader.load("sound/ui-sound-hover-270300.mp3", (buffer) => {
   activemenusound.setRefDistance(20); // for 3D spatial effect
 });
 
-camera.add(activemenusound)
-camera.add(hoveremenusound)
-camera.add(bgsound)
+camera.add(activemenusound);
+camera.add(hoveremenusound);
+camera.add(bgsound);
 audioLoader.load("sound/enter.mp3", (buffer) => {
   entersound.setBuffer(buffer);
   entersound.setLoop(false);
@@ -279,7 +281,6 @@ function startApp() {
         ui.style.transform = "translate3d(0, 0, 0)";
         hero_menu_button.style.transform = "translate3d(0, 0, 0)";
         setTimeout(() => {
-         
           // controls.minPolarAngle = 0;
           // controls.maxPolarAngle = Math.PI / 2;
           // controls.enablePan = false;
@@ -346,6 +347,9 @@ new GLTFLoader(loadermanager).load("playingcrowGoodQ.glb", (gltf) => {
         action0.play();
 
         flyawaysound.play();
+        setTimeout(() => {
+          scene.remove(mesh);
+        }, 2000);
       }, 4500);
     } else {
       requestAnimationFrame(checkMainAnimation);
@@ -609,7 +613,7 @@ const menuTEXT = [
   { text: "ABOUT", position: { x: -12.5, y: 0, z: -12.5 } },
   { text: "SETTINGS", position: { x: 12.5, y: 0, z: -12.5 } },
 ];
-textloader.load("/fonts/Orbitron_Regular.json", (font) => {
+textloader.load("/NEXLABS/fonts/Orbitron_Regular.json", (font) => {
   const textMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     envMapIntensity: 1.5, // increased reflection effect
@@ -644,7 +648,7 @@ textloader.load("/fonts/Orbitron_Regular.json", (font) => {
   });
 });
 // Add a simple cube to the scene
-const cubeGeometry = new THREE.ShapeGeometry(1,5)
+const cubeGeometry = new THREE.SphereGeometry(1);
 
 const cubeMaterial = new THREE.MeshStandardMaterial({
   color: "black",
@@ -706,14 +710,14 @@ const changeSectionCSSR3 = (option) => {
     content.innerHTML = html;
     if (option === "SETTINGS") {
       document.getElementById("mutedbutton").addEventListener("change", (u) => {
-      if (u.target.checked) {
-        bgsound.pause();
-      } else {
-        bgsound.play();
-      }
+        if (u.target.checked) {
+          bgsound.pause();
+        } else {
+          bgsound.play();
+        }
       });
     }
-    } else {
+  } else {
     element.style.opacity = 0;
     element.style.transform = "scale(0.95)";
     content.innerHTML = "";
@@ -736,8 +740,10 @@ toggle.addEventListener("change", () => {
   // lockLandscape();
   const isToggled = toggle.checked;
   const targetPosition = isToggled ? toggledPosition : originalPosition;
+  ui.style.transform = "translate3d(-5rem, 0, 0)";
   if (!isToggled) {
     explosionsound.play();
+    ui.style.transform = "translate3d(0, 0, 0)";
   }
   gsap.to(camera.position, {
     duration: 2,
@@ -820,7 +826,6 @@ window.addEventListener("click", (event) => {
         } else {
           if (LastMeshMenu.name === mesh.name || mesh.name === "backButton") {
             if (mesh.name === "backButton") {
-              
               changeSectionCSSR3(null);
               const box = new THREE.Box3().setFromObject(mesh);
               const meshCenter = new THREE.Vector3();
@@ -964,13 +969,14 @@ window.addEventListener("mousemove", (evt) => {
     localLastMesh = null;
   }
 });
+
 //
 controls.addEventListener("start", () => {
   targetToneEffect = -0.2;
   ui.style.transform = "translate3d(-5rem, 0, 0)";
   hero_menu_button.style.transform = "translate3d(5rem, 0, 0)";
   slowMotionScale = 0.5;
-  
+
   // Apply a lowpass filter effect with a smooth transition to bgsound
   const audioContext = bgsound.context;
   const filter = audioContext.createBiquadFilter();
@@ -978,12 +984,12 @@ controls.addEventListener("start", () => {
   // Start with a high cutoff frequency
   filter.frequency.value = 22050;
   bgsound.setFilter(filter);
-  
+
   // Smoothly lower the cutoff frequency to 1000 Hz over 1 second
   gsap.to(filter.frequency, {
     value: 1000,
     duration: 2,
-    ease: "power2.out"
+    ease: "power2.out",
   });
 });
 
@@ -992,7 +998,7 @@ controls.addEventListener("end", () => {
   ui.style.transform = "translate3d(0, 0, 0)";
   hero_menu_button.style.transform = "translate3d(0, 0, 0)";
   slowMotionScale = 1.0;
-  
+
   // Smoothly ramp the cutoff frequency back to 22050 Hz and then remove the filter
   const currentFilter = bgsound.getFilter();
   if (currentFilter) {
@@ -1002,7 +1008,7 @@ controls.addEventListener("end", () => {
       ease: "power2.out",
       onComplete: () => {
         bgsound.setFilter(null);
-      }
+      },
     });
   } else {
     bgsound.setFilter(null);
@@ -1061,3 +1067,4 @@ function animate(time) {
   // menuGroup.rotation.z += 0.01;
 }
 animate();
+
